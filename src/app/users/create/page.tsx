@@ -1,10 +1,9 @@
 'use client';
 
 import React from 'react';
+import CentralContainer from '@/components/CentralContainer';
 
-// Je crée mon composant de page pour créer un.e utilisateur.ice
 export default function CreateUserPage() {
-    // Fonction pour gérer la soumission du formulaire
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         const formData = new FormData(event.target as HTMLFormElement);
@@ -17,8 +16,6 @@ export default function CreateUserPage() {
             alert('Veuillez remplir tous les champs du formulaire.');
             return;
         }
-
-        const fullName = `${firstName} ${lastName}`;
 
         const userData = {
             email: email,
@@ -58,37 +55,41 @@ export default function CreateUserPage() {
     }
 
     return (
-        <div>
-            <h1>Rejoindre la communauté des vendeur.euses</h1>
+        <CentralContainer>
+            <h1>Register toi</h1>
             <form onSubmit={handleSubmit}>
                 <input 
                     type="email"
                     name="email"
                     placeholder="Email de l'utilisateur.ice"
                     required
+                    style={{ border: '1px solid white', background: 'transparent', color: 'white', margin: '8px', padding: '8px' }}
                 />
                 <input
                     type="text"
                     name="lastName"
                     placeholder="Nom de l'utilisateur.ice"
                     required
+                    style={{ border: '1px solid white', background: 'transparent', color: 'white', margin: '8px', padding: '8px' }}
                 />
                 <input
                     type="text"
                     name="firstName"
                     placeholder="Prénom de l'utilisateur.ice"
                     required
+                    style={{ border: '1px solid white', background: 'transparent', color: 'white', margin: '8px', padding: '8px' }}
                 />
                 <input 
                     type="password"
                     name="password"
                     placeholder="Mot de passe"
                     required
+                    style={{ border: '1px solid white', background: 'transparent', color: 'white', margin: '8px', padding: '8px' }}
                 />
                 <button type="submit">
-                    S'inscrire comme vendeur.euse
+                    Push da bouton
                 </button>
             </form>
-        </div>
+        </CentralContainer>
     )
 }
