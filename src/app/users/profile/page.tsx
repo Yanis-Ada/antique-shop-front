@@ -2,14 +2,17 @@
 import { useEffect, useState } from "react";
 
 type Furniture = {
-  id: number;
+  id?: number;
   title: string;
   type: string;
-  price: number;
   dimensions: string;
   colors: string;
   materials: string;
-  status: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  adminNotes: string;
+  status?: string;
 };
 
 type User = {
@@ -22,17 +25,19 @@ export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [furnitures, setFurnitures] = useState<Furniture[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<Furniture>({
     title: "",
     type: "",
-    price: "",
     dimensions: "",
     colors: "",
     materials: "",
+    description: "",
+    price: 0,
+    imageUrl: "",
+    adminNotes: ""
   });
   const [message, setMessage] = useState("");
 
-  // Récupère les infos utilisateur et ses annonces
   useEffect(() => {
     fetch("http://localhost:3001/api/users/me", {
       headers: { Authorization: "Bearer " + localStorage.getItem("token") },
@@ -47,58 +52,66 @@ export default function ProfilePage() {
       .then((data) => setFurnitures(Array.isArray(data) ? data : []));
   }, []);
 
-  // Gestion du formulaire
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    const { name, value, type } = e.target;
+    setForm({
+      ...form,
+      [name]: type === "number" ? Number(value) : value,
+    });
   }
 
   async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
-  setMessage("");
+    e.preventDefault();
+    setMessage("");
 
-  // Vérification des champs
-  if (
-  !form.title.trim() ||
-  !form.type.trim() ||
-  !form.price.toString().trim() ||
-  !form.dimensions.trim() ||
-  !form.colors.trim() ||
-  !form.materials.trim()
-) {
-  setMessage("Tous les champs sont requis.");
-  return;
-}
-
-      try {
-        const res = await fetch("http://localhost:3001/api/furniture", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-          body: JSON.stringify(form),
-        });
-        const data = await res.json();
-        if (res.ok) {
-          setMessage("Annonce créée et soumise à validation !");
-          setFurnitures((prev) => [...prev, data]);
-          setShowModal(false);
-          setForm({
-            title: "",
-            type: "",
-            price: "",
-            dimensions: "",
-            colors: "",
-            materials: "",
-          });
-        } else {
-          setMessage(data.error || "Erreur lors de la création.");
-        }
-      } catch (error) {
-        console.error(error);
-        setMessage("Erreur serveur.");
-      }
+    // Vérification des champs
+    if (
+      !form.title.trim() ||
+      !form.type.trim() ||
+      !form.dimensions.trim() ||
+      !form.colors.trim() ||
+      !form.materials.trim() ||
+      !form.description.trim() ||
+      !form.price ||
+      !form.imageUrl.trim()
+    ) {
+      setMessage("Tous les champs sont requis.");
+      return;
     }
+
+    try {
+      const res = await fetch("http://localhost:3001/api/furniture", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMessage("Annonce créée et soumise à validation !");
+        setFurnitures((prev) => [...prev, data]);
+        setShowModal(false);
+        setForm({
+          title: "",
+          type: "",
+          dimensions: "",
+          colors: "",
+          materials: "",
+          description: "",
+          price: 0,
+          imageUrl: "",
+          adminNotes: ""
+        });
+      } else {
+        setMessage(data.error || "Erreur lors de la création.");
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage("Erreur serveur.");
+    }
+  }
 
   return (
     <main>
@@ -124,10 +137,13 @@ export default function ProfilePage() {
           <tr>
             <th>Nom</th>
             <th>Type</th>
-            <th>Prix</th>
             <th>Dimensions</th>
             <th>Couleurs</th>
             <th>Matières</th>
+            <th>Description</th>
+            <th>Prix</th>
+            <th>Image</th>
+            <th>Notes admin</th>
             <th>Statut</th>
           </tr>
         </thead>
@@ -136,10 +152,17 @@ export default function ProfilePage() {
             <tr key={f.id}>
               <td>{f.title}</td>
               <td>{f.type}</td>
-              <td>{f.price} €</td>
               <td>{f.dimensions}</td>
               <td>{f.colors}</td>
               <td>{f.materials}</td>
+              <td>{f.description}</td>
+              <td>{f.price} €</td>
+              <td>
+                {f.imageUrl && (
+                  <img src={f.imageUrl} alt={f.title} style={{ width: "50px" }} />
+                )}
+              </td>
+              <td>{f.adminNotes}</td>
               <td>{f.status}</td>
             </tr>
           ))}
@@ -185,10 +208,6 @@ export default function ProfilePage() {
               <input name="type" value={form.type} onChange={handleChange} required />
             </label>
             <label>
-              Prix
-              <input name="price" type="number" value={form.price} onChange={handleChange} required />
-            </label>
-            <label>
               Dimensions
               <input name="dimensions" value={form.dimensions} onChange={handleChange} required />
             </label>
@@ -199,6 +218,22 @@ export default function ProfilePage() {
             <label>
               Matières
               <input name="materials" value={form.materials} onChange={handleChange} required />
+            </label>
+            <label>
+              Description
+              <textarea name="description" value={form.description} onChange={handleChange} required />
+            </label>
+            <label>
+              Prix
+              <input name="price" type="number" value={form.price} onChange={handleChange} required />
+            </label>
+            <label>
+              URL de l'image
+              <input name="imageUrl" value={form.imageUrl} onChange={handleChange} required />
+            </label>
+            <label>
+              Notes admin (optionnel)
+              <input name="adminNotes" value={form.adminNotes} onChange={handleChange} />
             </label>
             <button type="submit">Soumettre l'annonce</button>
             <button type="button" onClick={() => setShowModal(false)}>
