@@ -4,11 +4,11 @@ A modern marketplace frontend for furniture trading between individuals, built w
 
 ## Project Overview
 
-This frontend application provides an intuitive interface for the furniture marketplace with support for three user roles:
+This frontend application provides an interface for the furniture marketplace with support for three user roles:
 
-- **Sellers**: User-friendly interface to register, manage profiles, and list furniture for sale
-- **Administrators**: Dashboard to validate/reject listings and manage marketplace content
-- **Consumers**: Browse approved listings, manage shopping cart, and complete purchases
+- **Sellers**: Register, manage profiles, and list furniture for sale
+- **Administrators**: Validate/reject listings and manage marketplace content
+- **Consumers**: Browse approved listings
 
 ## Getting Started
 
@@ -37,8 +37,6 @@ This frontend application provides an intuitive interface for the furniture mark
    Edit `.env` with your configuration:
    ```env
    NEXT_PUBLIC_API_URL=http://localhost:3000
-   NEXTAUTH_SECRET=your-super-secret-key-change-this-in-production
-   NEXTAUTH_URL=http://localhost:3001
    NODE_ENV=development
    ```
 
@@ -52,25 +50,22 @@ This frontend application provides an intuitive interface for the furniture mark
 
 ## Features
 
-- **Responsive Design**: Optimized for desktop and mobile devices
-- **Authentication**: Secure user authentication with Google OAuth integration
-- **Real-time Updates**: Live updates for product listings and cart management
-- **Admin Dashboard**: Complete administration interface for marketplace management
-- **Shopping Cart**: Intuitive cart management with persistent storage
+- **JWT Authentication**: Authenticates users via JWT tokens, stored in localStorage
+- **Basic User & Listing Management**: Register, view profile, and create furniture listings
+- **Manual Testing**: API endpoints tested via Postman
+- **App Router**: Uses Next.js App Router (`src/app` structure)
+- **No styling framework**: No Tailwind CSS or other CSS libraries used yet
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 with App Router
+- **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Authentication**: NextAuth.js
-- **State Management**: React Context API
-- **HTTP Client**: Axios
+- **HTTP Client**: fetch API
+- **State Management**: React useState/useEffect
 
 ## Learn More
 
 To learn more about the technologies used:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API
-- [TypeScript Documentation](https://www.typescriptlang.org/docs/) - TypeScript language reference
-- [Tailwind CSS](https://tailwindcss.com/docs) - utility-first CSS framework
+- [Next.js Documentation](https://nextjs.org/docs)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
