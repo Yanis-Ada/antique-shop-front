@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import FurnitureCard from "./components/FurnitureCard";
+
 
 type Furniture = {
   id: number;
@@ -23,20 +23,15 @@ export default function HomePage() {
   return (
     <main>
       <h1>Meubles en vente</h1>
-      <ul>
-        {furnitures.length === 0 && <li>Aucun meuble disponible.</li>}
-        {Array.isArray(furnitures) &&
-          furnitures.map((furniture) => (
-            <FurnitureCard
-              key={furniture.id}
-              id={furniture.id}
-              title={furniture.title}
-              price={furniture.price}
-              imageUrl={furniture.imageUrl}
-              onClick={() => {}}
-            />
-          ))}
-      </ul>
+        <ul>
+          {furnitures.length === 0 && <li>Aucun meuble disponible.</li>}
+          {Array.isArray(furnitures) &&
+            furnitures.map((furniture) => (
+              <li key={furniture.id}>
+                {furniture.title} - {furniture.price}€
+              </li>
+            ))}
+        </ul>
     </main>
   );
 }
